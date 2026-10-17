@@ -48,13 +48,14 @@ The source has no missing cells, exact duplicate rows, duplicate IDs, negative c
 
 The interactive dashboard source is in [`site/index.html`](site/index.html). It includes contract, tenure, and payment-method filters; churn and retention KPIs; monthly revenue exposure; average tenure; segment charts; a performance table; and filtered CSV export.
 
-### View the dashboard online
+### Publish the dashboard online
 
-After GitHub Pages finishes its first deployment, open:
+GitHub Pages deployment workflow: [`.github/workflows/deploy-dashboard.yml`](.github/workflows/deploy-dashboard.yml).
+
+**One-time setup required:** open **Settings → Pages** in this repository and select **GitHub Actions** as the build and deployment source. The connected automation can commit project files but cannot enable the repository's Pages setting on its own. After enabling Pages, rerun the failed **Deploy Business KPI Dashboard** workflow from the Actions tab (or push another change under `site/`).
+
+When the workflow succeeds, the public dashboard URL should be:
 **https://pranav-nc-ai.github.io/customer-churn-data-quality/**
-
-The dashboard is deployed from the `site/` folder by `.github/workflows/deploy-dashboard.yml`. The workflow enables/configures Pages and deploys on pushes affecting `site/` or the workflow. The Vercel deployment URL is also available at:
-https://customer-churn-kpi-dashboard.vercel.app/
 
 ### KPI definitions
 - **Churn rate:** customers with `Churn = Yes` divided by all customers in the current filtered slice.
