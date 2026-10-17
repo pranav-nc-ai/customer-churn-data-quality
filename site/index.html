@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#172642">
+<meta name="description" content="Interactive customer churn KPI dashboard built for the Business KPI Dashboard internship task.">
+<title>Business KPI Dashboard | Customer Churn</title>
+<style>
+:root{--ink:#192945;--muted:#65748b;--line:#e4e9f2;--paper:#fff;--bg:#f4f7fb;--nav:#172642;--navMuted:#b7c4d8;--purple:#4d5bd1;--purpleSoft:#eef0ff;--teal:#087f72;--tealSoft:#e7f6f2;--coral:#c34259;--coralSoft:#fff0f2;--gold:#97651a;--goldSoft:#fff5df;--shadow:0 8px 26px rgba(24,42,72,.055)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,select{font:inherit}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #7384ff;outline-offset:3px}
+a{color:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:232px minmax(0,1fr)}
+.sidebar{background:var(--nav);color:white;padding:28px 18px;display:flex;flex-direction:column;gap:30px}
+.brand{display:flex;align-items:center;gap:11px;padding:0 7px}
+.brand-mark{height:40px;width:40px;border-radius:13px;background:#7f8bff;color:white;display:grid;place-items:center;font-weight:850;letter-spacing:-1px;font-size:16px}
+.brand-name{font-size:15px;font-weight:760;line-height:1.25}
+.brand-sub{color:var(--navMuted);font-size:11px;margin-top:3px;letter-spacing:.08em;text-transform:uppercase}
+.nav-title{color:#8293ae;text-transform:uppercase;font-size:10px;font-weight:750;letter-spacing:.14em;padding:0 12px;margin-bottom:8px}
+.nav-link{display:flex;align-items:center;gap:12px;padding:11px 12px;margin:4px 0;color:var(--navMuted);text-decoration:none;border-radius:10px;font-size:13px;font-weight:630}
+.nav-link.active{background:#293b5e;color:white}
+.nav-icon{width:19px;text-align:center;font-size:16px}
+.sidebar-note{margin-top:auto;border:1px solid #3b4b69;background:#203250;border-radius:13px;padding:15px;color:#d5deec;font-size:12px}
+.sidebar-note strong{display:block;color:white;font-size:12px;margin-bottom:6px}
+.sidebar-note p{margin:0;line-height:1.55}
+.sidebar-foot{font-size:11px;color:#93a3ba;padding:0 9px}
+main{min-width:0;padding:30px clamp(18px,3.2vw,46px) 36px;max-width:1600px;width:100%;margin:0 auto}
+.page-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:24px}
+.eyebrow{color:var(--purple);font-size:11px;letter-spacing:.13em;font-weight:800;text-transform:uppercase;margin:0 0 8px}
+h1{font-size:clamp(25px,2.5vw,33px);line-height:1.15;letter-spacing:-.045em;margin:0;font-weight:790}
+.subtitle{color:var(--muted);margin:10px 0 0;max-width:700px;font-size:14px}
+.head-status{display:flex;align-items:center;gap:8px;border:1px solid #d9e7e5;background:#f0faf6;color:#23685f;border-radius:999px;padding:8px 11px;white-space:nowrap;font-size:11px;font-weight:750}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#169780}
+.filter-panel,.panel,.kpi{background:var(--paper);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}
+.filter-panel{padding:17px 18px 16px;margin-bottom:19px}
+.filter-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:14px}
+.section-label{display:flex;gap:10px;align-items:center;font-weight:770;font-size:14px}
+.section-symbol{height:28px;width:28px;border-radius:8px;display:grid;place-items:center;background:var(--purpleSoft);color:var(--purple);font-size:15px}
+.filter-hint{font-size:11px;color:var(--muted)}
+.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:12px;align-items:end}
+.filter label{display:block;font-size:11px;font-weight:750;color:#55647b;margin-bottom:6px}
+.filter select{appearance:auto;background:#fff;color:var(--ink);border:1px solid #dbe2ec;border-radius:9px;width:100%;min-height:42px;padding:9px 11px}
+.reset-btn,.export-btn{border:1px solid #d8deea;background:white;color:#34445e;border-radius:9px;padding:10px 13px;min-height:42px;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap}
+.reset-btn:hover,.export-btn:hover{border-color:#99a6bd;background:#f8faff}
+.scope-line{font-size:11px;color:var(--muted);margin:12px 0 0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:19px}
+.kpi{padding:17px 18px 16px;min-height:145px;position:relative;overflow:hidden}
+.kpi-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.kpi-name{font-size:12px;font-weight:690;color:#65738a}
+.kpi-icon{height:31px;width:31px;border-radius:9px;display:grid;place-items:center;font-size:15px;font-weight:800}
+.kpi-icon.red{background:var(--coralSoft);color:var(--coral)}.kpi-icon.green{background:var(--tealSoft);color:var(--teal)}.kpi-icon.blue{background:var(--purpleSoft);color:var(--purple)}.kpi-icon.gold{background:var(--goldSoft);color:var(--gold)}
+.kpi-value{font-size:clamp(25px,2.4vw,32px);font-weight:800;letter-spacing:-.05em;margin-top:11px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi-foot{font-size:11px;color:var(--muted);margin-top:9px;line-height:1.4}
+.kpi-foot .positive{color:var(--teal);font-weight:750}.kpi-foot .negative{color:var(--coral);font-weight:750}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;margin-bottom:18px}
+.content-grid.equal{grid-template-columns:repeat(2,minmax(0,1fr))}
+.panel{padding:19px 20px;min-width:0}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.panel-title{font-size:14px;font-weight:790;margin:0;letter-spacing:-.01em}
+.panel-subtitle{font-size:11px;color:var(--muted);margin:4px 0 0;line-height:1.45}
+.panel-chip{font-size:10px;font-weight:800;color:#4c59bb;background:var(--purpleSoft);padding:5px 8px;border-radius:999px;white-space:nowrap}
+.donut-layout{display:grid;grid-template-columns:180px minmax(0,1fr);align-items:center;gap:16px;min-height:225px}
+.donut-box{position:relative;width:172px;height:172px;margin:auto}
+.donut-box svg{width:100%;height:100%;overflow:visible}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut-center strong{font-size:28px;letter-spacing:-.055em;line-height:1.1}
+.donut-center span{font-size:11px;color:var(--muted);margin-top:5px}
+.legend{display:flex;flex-direction:column;gap:16px}
+.legend-item{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:9px;align-items:center}
+.legend-dot{width:9px;height:9px;border-radius:3px}
+.legend-label{font-size:12px;color:#596981}
+.legend-value{font-weight:790;font-size:15px;font-variant-numeric:tabular-nums}
+.legend-sub{font-size:10px;color:#7a879b;margin-top:2px}
+.chart-list{display:flex;flex-direction:column;gap:17px;padding:1px 0 3px}
+.chart-row{min-width:0}
+.bar-head,.bar-foot{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.bar-head{font-size:12px;font-weight:720;color:#384862}
+.bar-head .count{font-weight:600;color:#75829a;font-size:10px}
+.track{height:9px;border-radius:999px;background:#edf1f6;overflow:hidden;margin-top:8px}
+.fill{height:100%;border-radius:999px;min-width:0;transition:width .25s ease}
+.bar-foot{font-size:10px;color:#7a879b;margin-top:5px}
+.bar-foot strong{font-size:11px;color:#384862}
+.chart-empty{padding:25px 10px;text-align:center;color:var(--muted);font-size:12px;background:#f8faff;border:1px dashed #dbe3ef;border-radius:10px}
+.insight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.insight{border:1px solid var(--line);border-radius:12px;padding:14px 15px;background:#fff}
+.insight-head{font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:850;color:#687792;display:flex;align-items:center;gap:7px}
+.insight-head span{height:24px;width:24px;border-radius:7px;display:grid;place-items:center;background:#f0f2ff;color:var(--purple);font-size:13px}
+.insight p{font-size:12px;color:#53627a;line-height:1.55;margin:10px 0 0}
+.table-wrap{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th{text-align:left;color:#75829a;font-size:10px;letter-spacing:.07em;text-transform:uppercase;background:#f8faff;padding:11px 12px;font-weight:800;border-bottom:1px solid var(--line)}
+td{padding:12px;font-size:12px;color:#42516a;border-bottom:1px solid #edf0f5}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{font-weight:750;color:#263854}
+.rate-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#fff0f2;color:#a62f45;font-weight:800;font-size:10px}
+.rate-pill.low{background:#e8f6f1;color:#176b5d}
+.money{font-variant-numeric:tabular-nums;white-space:nowrap}
+.table-note{font-size:10px;color:#7d899d;line-height:1.5;margin:10px 0 0}
+.method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.method-box{border-top:1px solid var(--line);margin-top:17px;padding-top:14px}
+.method-box h3{font-size:12px;margin:0 0 7px;color:#33435d}
+.method-box p{font-size:11px;color:#68778f;margin:0;line-height:1.65}
+.footer{display:flex;justify-content:space-between;gap:18px;align-items:center;color:#7d899c;font-size:10px;padding:17px 2px 0}
+.footer a{color:#4c5abf;text-decoration:none;font-weight:750}
+.footer a:hover{text-decoration:underline}
+.note-banner{padding:12px 14px;border:1px solid #eadcb6;background:#fffaf0;color:#6f5725;border-radius:11px;font-size:11px;line-height:1.55;margin-bottom:18px}
+.note-banner strong{color:#614617}
+@media(max-width:1100px){.app{grid-template-columns:190px minmax(0,1fr)}.sidebar{padding:24px 12px}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid,.content-grid.equal{grid-template-columns:repeat(2,minmax(0,1fr))}.donut-layout{grid-template-columns:150px minmax(0,1fr);gap:10px}.donut-box{width:148px;height:148px}}
+@media(max-width:760px){.app{display:block}.sidebar{padding:13px 16px;display:block}.brand{padding:0}.brand-mark{width:36px;height:36px}.nav-title,.sidebar-note,.sidebar-foot{display:none}.nav{display:flex;gap:5px;margin-top:12px;overflow:auto}.nav-link{padding:9px 11px;white-space:nowrap;margin:0;font-size:12px}.nav-link:not(.active){display:none}.page-head{display:block}.head-status{display:inline-flex;margin-top:15px}.filters{grid-template-columns:1fr 1fr}.filters .filter:first-child{grid-column:span 2}.reset-btn{grid-column:span 2}.kpi-grid{gap:10px}.kpi{padding:14px;min-height:135px}.content-grid,.content-grid.equal{grid-template-columns:1fr}.donut-layout{grid-template-columns:150px minmax(0,1fr)}.donut-box{width:145px;height:145px}.insight-grid{grid-template-columns:1fr}.method-grid{grid-template-columns:1fr}.footer{display:block;line-height:1.7}}
+@media(max-width:390px){main{padding:20px 12px 26px}.filter-panel,.panel{padding:15px}.filters{grid-template-columns:1fr}.filters .filter:first-child,.reset-btn{grid-column:auto}.kpi-grid{grid-template-columns:1fr 1fr}.kpi-value{font-size:25px}.kpi-name{font-size:11px}.donut-layout{grid-template-columns:1fr}.donut-box{width:152px;height:152px}.legend{display:grid;grid-template-columns:1fr 1fr;gap:11px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Dashboard navigation">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">CK</div>
+      <div><div class="brand-name">Customer<br>Insights</div><div class="brand-sub">Analytics workspace</div></div>
+    </div>
+    <div>
+      <div class="nav-title">Workspace</div>
+      <nav class="nav">
+        <a class="nav-link active" href="#overview" aria-current="page"><span class="nav-icon" aria-hidden="true">◫</span>Overview</a>
+        <a class="nav-link" href="#segments"><span class="nav-icon" aria-hidden="true">▥</span>Segments</a>
+        <a class="nav-link" href="#definitions"><span class="nav-icon" aria-hidden="true">ⓘ</span>KPI definitions</a>
+      </nav>
+    </div>
+    <div class="sidebar-note">
+      <strong>How to use this dashboard</strong>
+      <p>Choose contract, tenure, or payment filters. KPI cards, charts, insight notes, and segment tables update together.</p>
+    </div>
+    <div class="sidebar-foot">BUSINESS KPI DASHBOARD<br>Internship Task 03</div>
+  </aside>
+  <main id="overview">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Business intelligence / customer success</p>
+        <h1>Business KPI Dashboard</h1>
+        <p class="subtitle">Understand churn, customer retention, recurring revenue exposure, and the customer segments behind the numbers.</p>
+      </div>
+      <div class="head-status"><span class="status-dot"></span>Interactive · Sample data</div>
+    </header>
+
+    <section class="filter-panel" aria-labelledby="filters-title">
+      <div class="filter-head">
+        <div class="section-label" id="filters-title"><span class="section-symbol" aria-hidden="true">⚙</span>Explore customer segments</div>
+        <div class="filter-hint">All charts respond to these filters</div>
+      </div>
+      <div class="filters">
+        <div class="filter"><label for="contract-filter">Contract type</label><select id="contract-filter"><option value="all">All contract types</option></select></div>
+        <div class="filter"><label for="tenure-filter">Tenure range</label><select id="tenure-filter"><option value="all">All tenure ranges</option><option value="0-6">0–6 months</option><option value="7-12">7–12 months</option><option value="13-24">13–24 months</option><option value="25+">25+ months</option></select></div>
+        <div class="filter"><label for="payment-filter">Payment method</label><select id="payment-filter"><option value="all">All payment methods</option></select></div>
+        <button class="reset-btn" id="reset-filters" type="button">↻ Reset filters</button>
+      </div>
+      <div class="scope-line"><span id="scope-count" aria-live="polite">Showing all 15 customers</span><span>Source: supplied synthetic customer churn CSV</span></div>
+    </section>
+
+    <section class="kpi-grid" aria-label="Key performance indicators">
+      <article class="kpi">
+        <div class="kpi-top"><span class="kpi-name">Churn rate</span><span class="kpi-icon red" aria-hidden="true">↗</span></div>
+        <div class="kpi-value" id="kpi-churn">46.7%</div>
+        <div class="kpi-foot" id="kpi-churn-foot">7 of 15 customers churned</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-top"><span class="kpi-name">Retention rate</span><span class="kpi-icon green" aria-hidden="true">✓</span></div>
+        <div class="kpi-value" id="kpi-retention">53.3%</div>
+        <div class="kpi-foot" id="kpi-retention-foot">8 customers not marked churned</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-top"><span class="kpi-name">Revenue at risk · monthly</span><span class="kpi-icon gold" aria-hidden="true">₹</span></div>
+        <div class="kpi-value" id="kpi-revenue">₹409.93</div>
+        <div class="kpi-foot" id="kpi-revenue-foot">Monthly charges for churned records</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-top"><span class="kpi-name">Average tenure</span><span class="kpi-icon blue" aria-hidden="true">◷</span></div>
+        <div class="kpi-value" id="kpi-tenure">18.8 mo</div>
+        <div class="kpi-foot" id="kpi-tenure-foot">Across the selected customer group</div>
+      </article>
+    </section>
+
+    <div class="note-banner"><strong>Interpretation note:</strong> The sample contains only 15 synthetic records. “Revenue at risk” is defined here as monthly charges associated with records already marked as churned. It is a historical revenue-exposure proxy, not a forecast of future losses.</div>
+
+    <section class="content-grid">
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Customer status mix</h2><p class="panel-subtitle">Retention and churn within the selected segment</p></div><span class="panel-chip">CUSTOMER MIX</span></div>
+        <div class="donut-layout">
+          <div class="donut-box">
+            <svg id="status-donut" viewBox="0 0 160 160" role="img" aria-label="Donut chart of churned versus retained customer counts">
+              <circle cx="80" cy="80" r="55" fill="none" stroke="#edf1f6" stroke-width="18"></circle>
+              <circle id="donut-retained" cx="80" cy="80" r="55" fill="none" stroke="#087f72" stroke-width="18" stroke-linecap="butt" transform="rotate(-90 80 80)"></circle>
+              <circle id="donut-churned" cx="80" cy="80" r="55" fill="none" stroke="#c34259" stroke-width="18" stroke-linecap="butt" transform="rotate(-90 80 80)"></circle>
+            </svg>
+            <div class="donut-center"><strong id="donut-total">15</strong><span>customers</span></div>
+          </div>
+          <div class="legend" id="status-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:#087f72"></span><div><div class="legend-label">Retained / no churn</div><div class="legend-sub">Not marked churned</div></div><div class="legend-value">8</div></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#c34259"></span><div><div class="legend-label">Churned</div><div class="legend-sub">Marked churn = Yes</div></div><div class="legend-value">7</div></div>
+          </div>
+        </div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Churn rate by contract</h2><p class="panel-subtitle">Share of customers marked churned in each contract group</p></div><span class="panel-chip">CONTRACT</span></div>
+        <div class="chart-list" id="contract-chart" aria-label="Churn rate by contract type"></div>
+      </article>
+    </section>
+
+    <section class="content-grid equal">
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Churn rate by tenure</h2><p class="panel-subtitle">Tenure buckets use completed months since signup</p></div><span class="panel-chip">TENURE</span></div>
+        <div class="chart-list" id="tenure-chart" aria-label="Churn rate by tenure range"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Churn rate by payment method</h2><p class="panel-subtitle">Use this view to compare payment-method segments</p></div><span class="panel-chip">PAYMENT</span></div>
+        <div class="chart-list" id="payment-chart" aria-label="Churn rate by payment method"></div>
+      </article>
+    </section>
+
+    <section class="insight-grid" aria-labelledby="insights-title">
+      <article class="insight"><div class="insight-head" id="insights-title"><span aria-hidden="true">⌁</span>Segment signal</div><p id="insight-contract">Month-to-Month has the highest observed churn rate in this sample.</p></article>
+      <article class="insight"><div class="insight-head"><span aria-hidden="true">◷</span>Tenure comparison</div><p id="insight-tenure">Average tenure is lower among customers marked churned.</p></article>
+      <article class="insight"><div class="insight-head"><span aria-hidden="true">₹</span>Revenue exposure</div><p id="insight-revenue">Monthly charges for churned records are a simple exposure proxy.</p></article>
+    </section>
+
+    <section class="panel" id="segments">
+      <div class="panel-head"><div><h2 class="panel-title">Segment performance table</h2><p class="panel-subtitle">Contract groups within the selected filter set</p></div><button class="export-btn" id="download-csv" type="button">↓ Export filtered CSV</button></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Contract type</th><th scope="col">Customers</th><th scope="col">Churned</th><th scope="col">Churn rate</th><th scope="col">Monthly revenue exposure</th></tr></thead>
+          <tbody id="contract-table"><tr><td>Month-to-Month</td><td>7</td><td>7</td><td><span class="rate-pill">100%</span></td><td class="money">₹409.93</td></tr></tbody>
+        </table>
+      </div>
+      <p class="table-note">Exposure = sum of MonthlyCharges for records where Churn = Yes. Rows with no customers in the filtered slice are omitted.</p>
+    </section>
+
+    <section class="panel" id="definitions" style="margin-top:18px">
+      <div class="panel-head"><div><h2 class="panel-title">KPI definitions & methodology</h2><p class="panel-subtitle">Clear definitions make the dashboard auditable and reproducible</p></div><span class="panel-chip">METHOD NOTES</span></div>
+      <div class="method-grid">
+        <div class="method-box"><h3>Churn rate</h3><p>Number of records with <strong>Churn = Yes</strong> divided by all records in the current filtered sample. This is an observation-period rate only insofar as the supplied labels represent that period.</p></div>
+        <div class="method-box"><h3>Retention rate</h3><p>Number of records with <strong>Churn = No</strong> divided by all records in the current filtered sample. It is the complement of churn rate for these binary labels.</p></div>
+        <div class="method-box"><h3>Revenue at risk · monthly proxy</h3><p>Sum of <strong>MonthlyCharges</strong> for churned records in the current filter slice. Because these records are already marked churned, this is best interpreted as monthly charges associated with churn, not a forward-looking prediction.</p></div>
+        <div class="method-box"><h3>Tenure KPIs & filters</h3><p>Average tenure is the arithmetic mean of <strong>TenureMonths</strong>. Tenure cohorts are 0–6, 7–12, 13–24, and 25+ months. Contract, tenure, and payment filters update every metric and visual.</p></div>
+      </div>
+      <div class="method-box"><h3>Limitations and responsible use</h3><p>The dataset has 15 synthetic rows, so a small number of records can materially change each rate. The dashboard describes associations and does not predict churn or prove that contract type or payment method causes churn. Validate any hypothesis on a larger, representative dataset before making customer-contact decisions.</p></div>
+    </section>
+    <footer class="footer"><span>Customer Insights · Business KPI Dashboard · Internship Task 03</span><span><a href="../reports/data_quality_report.md">Related quality report</a> · <a href="https://github.com/pranav-nc-ai/customer-churn-data-quality">Project repository ↗</a></span></footer>
+  </main>
+</div>
+<script>
+"use strict";
+const DATA = [
+ {CustomerID:"CUST-1001",Gender:"Female",Age:34,TenureMonths:12,SubscriptionType:"Basic",MonthlyCharges:49.99,TotalCharges:599.88,ContractType:"Month-to-Month",SupportTickets:3,PaymentMethod:"Credit Card",Churn:"Yes"},
+ {CustomerID:"CUST-1002",Gender:"Male",Age:45,TenureMonths:24,SubscriptionType:"Pro",MonthlyCharges:79.99,TotalCharges:1919.76,ContractType:"One Year",SupportTickets:1,PaymentMethod:"Bank Transfer",Churn:"No"},
+ {CustomerID:"CUST-1003",Gender:"Female",Age:29,TenureMonths:6,SubscriptionType:"Basic",MonthlyCharges:49.99,TotalCharges:299.94,ContractType:"Month-to-Month",SupportTickets:5,PaymentMethod:"UPI",Churn:"Yes"},
+ {CustomerID:"CUST-1004",Gender:"Male",Age:52,TenureMonths:36,SubscriptionType:"Enterprise",MonthlyCharges:149.99,TotalCharges:5399.64,ContractType:"Two Year",SupportTickets:0,PaymentMethod:"Credit Card",Churn:"No"},
+ {CustomerID:"CUST-1005",Gender:"Female",Age:41,TenureMonths:8,SubscriptionType:"Pro",MonthlyCharges:79.99,TotalCharges:639.92,ContractType:"Month-to-Month",SupportTickets:4,PaymentMethod:"Debit Card",Churn:"Yes"},
+ {CustomerID:"CUST-1006",Gender:"Male",Age:31,TenureMonths:18,SubscriptionType:"Basic",MonthlyCharges:49.99,TotalCharges:899.82,ContractType:"One Year",SupportTickets:2,PaymentMethod:"UPI",Churn:"No"},
+ {CustomerID:"CUST-1007",Gender:"Female",Age:23,TenureMonths:3,SubscriptionType:"Basic",MonthlyCharges:49.99,TotalCharges:149.97,ContractType:"Month-to-Month",SupportTickets:6,PaymentMethod:"Credit Card",Churn:"Yes"},
+ {CustomerID:"CUST-1008",Gender:"Male",Age:60,TenureMonths:48,SubscriptionType:"Enterprise",MonthlyCharges:149.99,TotalCharges:7199.52,ContractType:"Two Year",SupportTickets:1,PaymentMethod:"Bank Transfer",Churn:"No"},
+ {CustomerID:"CUST-1009",Gender:"Female",Age:38,TenureMonths:15,SubscriptionType:"Pro",MonthlyCharges:79.99,TotalCharges:1199.85,ContractType:"One Year",SupportTickets:2,PaymentMethod:"Credit Card",Churn:"No"},
+ {CustomerID:"CUST-1010",Gender:"Male",Age:27,TenureMonths:4,Basic:"Basic",SubscriptionType:"Basic",MonthlyCharges:49.99,TotalCharges:199.96,ContractType:"Month-to-Month",SupportTickets:4,PaymentMethod:"UPI",Churn:"Yes"},
+ {CustomerID:"CUST-1011",Gender:"Female",Age:49,TenureMonths:30,SubscriptionType:"Enterprise",MonthlyCharges:149.99,TotalCharges:4499.70,ContractType:"Two Year",SupportTickets:0,PaymentMethod:"Credit Card",Churn:"No"},
+ {CustomerID:"CUST-1012",Gender:"Male",Age:33,TenureMonths:14,SubscriptionType:"Pro",MonthlyCharges:79.99,TotalCharges:1119.86,ContractType:"Month-to-Month",SupportTickets:3,PaymentMethod:"Debit Card",Churn:"Yes"},
+ {CustomerID:"CUST-1013",Gender:"Female",Age:55,TenureMonths:22,SubscriptionType:"Basic",MonthlyCharges:49.99,TotalCharges:1099.78,ContractType:"One Year",SupportTickets:1,PaymentMethod:"Bank Transfer",Churn:"No"},
+ {CustomerID:"CUST-1014",Gender:"Male",Age:26,TenureMonths:2,SubscriptionType:"Basic",MonthlyCharges:49.99,TotalCharges:99.98,ContractType:"Month-to-Month",SupportTickets:5,PaymentMethod:"UPI",Churn:"Yes"},
+ {CustomerID:"CUST-1015",Gender:"Female",Age:43,TenureMonths:40,SubscriptionType:"Enterprise",MonthlyCharges:149.99,TotalCharges:5999.60,ContractType:"Two Year",SupportTickets:1,PaymentMethod:"Credit Card",Churn:"No"}
+];
+const $ = id => document.getElementById(id);
+const money = value => "₹" + Number(value || 0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct = value => Number.isFinite(value) ? value.toFixed(1) + "%" : "—";
+const avg = (rows,key) => rows.length ? rows.reduce((s,r)=>s+Number(r[key]||0),0)/rows.length : 0;
+const sum = (rows,key) => rows.reduce((s,r)=>s+Number(r[key]||0),0);
+const safe = value => String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const tenureBand = n => n<=6 ? "0–6 months" : n<=12 ? "7–12 months" : n<=24 ? "13–24 months" : "25+ months";
+const BAND_ORDER = ["0–6 months","7–12 months","13–24 months","25+ months"];
+function churned(rows){return rows.filter(r=>r.Churn==="Yes")}
+function retained(rows){return rows.filter(r=>r.Churn==="No")}
+function optionsFromData(id,key,firstLabel){const select=$(id);const values=Array.from(new Set(DATA.map(r=>r[key]))).sort((a,b)=>String(a).localeCompare(String(b)));values.forEach(v=>{const opt=document.createElement("option");opt.value=v;opt.textContent=v;select.appendChild(opt)});}
+function filteredData(){
+ const contract=$("contract-filter").value,payment=$("payment-filter").value,tenure=$("tenure-filter").value;
+ return DATA.filter(r=>{
+  if(contract!=="all"&&r.ContractType!==contract)return false;
+  if(payment!=="all"&&r.PaymentMethod!==payment)return false;
+  if(tenure==="0-6"&&!(r.TenureMonths>=0&&r.TenureMonths<=6))return false;
+  if(tenure==="7-12"&&!(r.TenureMonths>=7&&r.TenureMonths<=12))return false;
+  if(tenure==="13-24"&&!(r.TenureMonths>=13&&r.TenureMonths<=24))return false;
+  if(tenure==="25+"&&r.TenureMonths<25)return false;
+  return true;
+ });
+}
+function statsBy(rows,key,ordered){
+ const map=new Map();
+ rows.forEach(r=>{
+  const value=key==="TenureBand"?tenureBand(r.TenureMonths):r[key];
+  if(!map.has(value))map.set(value,{label:value,customers:0,churned:0,retained:0,revenue:0});
+  const s=map.get(value);s.customers++;if(r.Churn==="Yes"){s.churned++;s.revenue+=r.MonthlyCharges}else{s.retained++;}
+ });
+ let arr=Array.from(map.values()).map(s=>({...s,rate:s.customers?100*s.churned/s.customers:0}));
+ if(ordered){arr.sort((a,b)=>ordered.indexOf(a.label)-ordered.indexOf(b.label));}
+ else arr.sort((a,b)=>a.label.localeCompare(b.label));
+ return arr;
+}
+function emptyHTML(message){return '<div class="chart-empty">'+safe(message)+'</div>'}
+function renderRateBars(id,rows){
+ const root=$(id);
+ if(!rows.length){root.innerHTML=emptyHTML("No customers match the selected filters.");return;}
+ root.innerHTML=rows.map(g=>{
+  const color=g.rate>=50?"var(--coral)":"var(--teal)";
+  return '<div class="chart-row"><div class="bar-head"><span>'+safe(g.label)+'</span><span class="count">'+g.customers+' customer'+(g.customers===1?"":"s")+'</span></div><div class="track" role="img" aria-label="'+safe(g.label)+': '+pct(g.rate)+' churn rate"><div class="fill" style="width:'+g.rate+'%;background:'+color+'"></div></div><div class="bar-foot"><span>'+g.churned+' churned / '+g.customers+' total</span><strong>'+pct(g.rate)+'</strong></div></div>';
+ }).join("");
+}
+function renderDonut(rows){
+ const total=rows.length,c=churned(rows).length,r=retained(rows).length,circ=2*Math.PI*55;
+ $("donut-total").textContent=String(total);
+ $("donut-retained").setAttribute("stroke-dasharray",(total?circ*r/total:0)+" "+circ);
+ $("donut-retained").setAttribute("stroke-dashoffset","0");
+ $("donut-churned").setAttribute("stroke-dasharray",(total?circ*c/total:0)+" "+circ);
+ $("donut-churned").setAttribute("stroke-dashoffset",String(-circ*(total?r/total:0)));
+ $("status-donut").setAttribute("aria-label","Customer status mix: "+r+" not marked churned, "+c+" churned, out of "+total+" selected customers.");
+ $("status-legend").innerHTML='<div class="legend-item"><span class="legend-dot" style="background:#087f72"></span><div><div class="legend-label">Retained / no churn</div><div class="legend-sub">Not marked churned</div></div><div class="legend-value">'+r+'</div></div><div class="legend-item"><span class="legend-dot" style="background:#c34259"></span><div><div class="legend-label">Churned</div><div class="legend-sub">Marked Churn = Yes</div></div><div class="legend-value">'+c+'</div></div>';
+}
+function renderContractTable(groups){
+ const body=$("contract-table");
+ if(!groups.length){body.innerHTML='<tr><td colspan="5">No customers match the selected filters.</td></tr>';return;}
+ body.innerHTML=groups.map(g=>'<tr><td>'+safe(g.label)+'</td><td>'+g.customers+'</td><td>'+g.churned+'</td><td><span class="rate-pill '+(g.rate<20?"low":"")+'">'+pct(g.rate)+'</span></td><td class="money">'+money(g.revenue)+'</td></tr>').join("");
+}
+function renderInsights(rows,contractGroups){
+ const populated=contractGroups.filter(g=>g.customers>0).sort((a,b)=>b.rate-a.rate);
+ if(populated.length){
+  const top=populated[0];
+  $("insight-contract").textContent=top.label+" has the highest observed churn rate in this filtered slice ("+pct(top.rate)+", "+top.churned+" of "+top.customers+"). Segment counts are small, so treat this as a hypothesis to validate.";
+ }else{$("insight-contract").textContent="No contract segments have customers for the current filter combination.";}
+ const c=churned(rows),r=retained(rows);
+ if(c.length&&r.length){
+  const ct=avg(c,"TenureMonths"),rt=avg(r,"TenureMonths"),gap=rt-ct;
+  $("insight-tenure").textContent="Average tenure is "+ct.toFixed(1)+" months among churned records versus "+rt.toFixed(1)+" months among records not marked churned (difference "+gap.toFixed(1)+" months). This is an association, not causation.";
+ }else{$("insight-tenure").textContent="A tenure comparison needs at least one churned and one non-churned customer in the current selection.";}
+ const rev=sum(c,"MonthlyCharges"),totalRev=sum(rows,"MonthlyCharges"),share=totalRev?100*rev/totalRev:0;
+ $("insight-revenue").textContent=money(rev)+" in monthly charges are linked to churned records ("+pct(share)+" of the selected sample's total monthly charges). This historical proxy is not a forecast.";
+}
+function renderDashboard(){
+ const rows=filteredData(),c=churned(rows),r=retained(rows),n=rows.length;
+ const churnRate=n?100*c.length/n:0,retainRate=n?100*r.length/n:0,risk=sum(c,"MonthlyCharges");
+ $("scope-count").textContent=n===DATA.length?"Showing all "+n+" customers":"Showing "+n+" of "+DATA.length+" customers after filters";
+ $("kpi-churn").textContent=n?pct(churnRate):"—";
+ $("kpi-churn-foot").textContent=n?c.length+" of "+n+" customers churned":"No matching customers";
+ $("kpi-retention").textContent=n?pct(retainRate):"—";
+ $("kpi-retention-foot").textContent=n?r.length+" customers not marked churned":"No matching customers";
+ $("kpi-revenue").textContent=n?money(risk):"—";
+ $("kpi-revenue-foot").textContent=n?money(sum(rows,"MonthlyCharges"))+" total sample monthly charges":"No matching customers";
+ $("kpi-tenure").textContent=n?avg(rows,"TenureMonths").toFixed(1)+" mo":"—";
+ $("kpi-tenure-foot").textContent=n? "Mean tenure across "+n+" selected customer"+(n===1?"":"s"):"No matching customers";
+ renderDonut(rows);
+ const contractGroups=statsBy(rows,"ContractType",["Month-to-Month","One Year","Two Year"]);
+ const tenureGroups=statsBy(rows,"TenureBand",BAND_ORDER);
+ const paymentGroups=statsBy(rows,"PaymentMethod",["Bank Transfer","Credit Card","Debit Card","UPI"]);
+ renderRateBars("contract-chart",contractGroups);
+ renderRateBars("tenure-chart",tenureGroups);
+ renderRateBars("payment-chart",paymentGroups);
+ renderContractTable(contractGroups);
+ renderInsights(rows,contractGroups);
+}
+function resetFilters(){$("contract-filter").value="all";$("tenure-filter").value="all";$("payment-filter").value="all";renderDashboard();}
+function downloadCSV(){
+ const rows=filteredData();
+ const keys=["CustomerID","Gender","Age","TenureMonths","SubscriptionType","MonthlyCharges","TotalCharges","ContractType","SupportTickets","PaymentMethod","Churn"];
+ const esc=v=>{const s=String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+ const csv=[keys.join(",")].concat(rows.map(r=>keys.map(k=>esc(r[k])).join(","))).join("\r\n");
+ const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="filtered_customer_churn.csv";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+optionsFromData("contract-filter","ContractType");
+optionsFromData("payment-filter","PaymentMethod");
+["contract-filter","tenure-filter","payment-filter"].forEach(id=>$(id).addEventListener("change",renderDashboard));
+$("reset-filters").addEventListener("click",resetFilters);
+$("download-csv").addEventListener("click",downloadCSV);
+renderDashboard();
+</script>
+</body>
+</html>
