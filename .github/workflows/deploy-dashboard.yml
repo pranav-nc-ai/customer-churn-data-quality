@@ -1,10 +1,11 @@
-name: Deploy Business KPI Dashboard
+name: Deploy Business KPI Dashboard and Executive Capstone
 
 on:
   push:
     branches: [main]
     paths:
       - "site/**"
+      - "task-05-executive-capstone/**"
       - ".github/workflows/deploy-dashboard.yml"
   workflow_dispatch:
 
@@ -32,11 +33,24 @@ jobs:
         with:
           enablement: true
 
-      - name: Upload dashboard site
+      - name: Install media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice-impress ffmpeg espeak poppler-utils
+
+      - name: Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy matplotlib python-pptx pillow
+
+      - name: Build executive deck, PDF, and narrated video
+        run: python task-05-executive-capstone/build.py site/task-05
+
+      - name: Upload dashboard and capstone site
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
-      - name: Deploy dashboard
+      - name: Deploy dashboard and capstone
         id: deployment
         uses: actions/deploy-pages@v4
