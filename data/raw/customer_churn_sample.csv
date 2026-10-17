@@ -1,0 +1,16 @@
+CustomerID,Gender,Age,TenureMonths,SubscriptionType,MonthlyCharges,TotalCharges,ContractType,SupportTickets,PaymentMethod,Churn
+CUST001,Male,28,3,Basic,499,1497,Month-to-Month,5,UPI,Yes
+CUST002,Female,35,36,Premium,999,35964,One Year,1,Credit Card,No
+CUST003,Male,42,48,Enterprise,1499,71952,Two Year,0,Net Banking,No
+CUST004,Female,24,2,Basic,499,998,Month-to-Month,6,UPI,Yes
+CUST005,Male,31,12,Premium,999,11988,Month-to-Month,4,Credit Card,Yes
+CUST006,Female,45,60,Enterprise,1499,89940,Two Year,1,Net Banking,No
+CUST007,Male,29,5,Basic,499,2495,Month-to-Month,3,UPI,Yes
+CUST008,Female,38,30,Premium,999,29970,One Year,2,Credit Card,No
+CUST009,Male,51,72,Enterprise,1499,107928,Two Year,0,Net Banking,No
+CUST010,Female,26,4,Basic,499,1996,Month-to-Month,5,UPI,Yes
+CUST011,Male,33,18,Premium,999,17982,Month-to-Month,4,Credit Card,Yes
+CUST012,Female,47,54,Enterprise,1499,80946,Two Year,1,Net Banking,No
+CUST013,Male,39,24,Premium,999,23976,One Year,3,Credit Card,No
+CUST014,Female,22,1,Basic,499,499,Month-to-Month,7,UPI,Yes
+CUST015,Male,34,9,Premium,999,8991,Month-to-Month,2,Credit Card,No
