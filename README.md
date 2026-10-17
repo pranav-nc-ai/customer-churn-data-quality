@@ -76,3 +76,8 @@ The Task 04 deliverables are in [task-04-segmentation/](task-04-segmentation/):
 - [Task 04 README and run instructions](task-04-segmentation/README.md)
 
 The rule-based score uses contract type, tenure, and support tickets. It is a transparent triage heuristic, not a probability or validated prediction. The sample contains only 15 synthetic records; same-sample churn patterns must not be treated as evidence of generalization or causation.
+
+
+## Task 05 — Executive Analytics Capstone
+
+The executive presentation and recommendation brief are in [task-05-executive-capstone/](task-05-executive-capstone/). After the GitHub Pages build completes, open the [public executive capstone page](https://pranav-nc-ai.github.io/customer-churn-data-quality/task-05/) for the executive PDF, editable PowerPoint, and narrated video. The impact assumptions and limitations are documented alongside the memo.
