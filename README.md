@@ -64,3 +64,15 @@ When the workflow succeeds, the public dashboard URL should be:
 - **Average tenure:** mean of `TenureMonths` for the currently filtered group.
 
 All dashboard figures are computed from 15 synthetic records. Interpret segment rates cautiously; the dashboard describes associations and does not establish causation.
+
+
+## Task 04 — Segmentation and Recommendation Model
+
+The Task 04 deliverables are in [task-04-segmentation/](task-04-segmentation/):
+
+- [Reproducible segmentation and risk-score notebook](task-04-segmentation/notebooks/churn_segmentation_risk_model.ipynb)
+- [Customer-by-customer scored segment table](task-04-segmentation/outputs/customer_segment_assignments.csv)
+- [Recommendation memo](task-04-segmentation/reports/recommendation_memo.md)
+- [Task 04 README and run instructions](task-04-segmentation/README.md)
+
+The rule-based score uses contract type, tenure, and support tickets. It is a transparent triage heuristic, not a probability or validated prediction. The sample contains only 15 synthetic records; same-sample churn patterns must not be treated as evidence of generalization or causation.
