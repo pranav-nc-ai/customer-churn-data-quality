@@ -1,28 +1,32 @@
 # Task 05 — Executive Analytics Capstone
 
-This capstone distills the customer churn analysis into an executive decision brief.
+This capstone distills the supplied synthetic customer churn analysis into an executive decision brief.
 
 ## Live proof link
 **Executive capstone page:** https://pranav-nc-ai.github.io/customer-churn-data-quality/task-05/
 
-The page links to the executive PDF, editable PowerPoint, and a narrated presentation video once the build workflow completes. The broader project dashboard remains at https://pranav-nc-ai.github.io/customer-churn-data-quality/.
+The public page links to the executive PDF, editable PowerPoint, and narrated MP4 generated during the GitHub Pages build. The prior interactive KPI dashboard remains at https://pranav-nc-ai.github.io/customer-churn-data-quality/.
 
-## Source and reproducibility
-- Source CSV: data/customer_churn_sample.csv (15 synthetic customer records).
-- Generator: generate_capstone.py. It validates data assumptions, computes the key metrics, produces an editable 8-slide PPTX, exports the matching PDF, and creates a narrated MP4 from the slides.
-- The public downloadable assets are generated into site/task-05/ by the Build Task 05 workflow.
+## Deliverables
+- `reports/executive_recommendation_memo.md` — five insights, recommendation, impact sensitivities, pilot, and limitations.
+- `presentation_script.md` — narration script for an approximately three-minute executive briefing.
+- `reports/limitations.md` — KPI definitions, assumptions, and evidence boundaries.
+- `impact_scenarios.csv` — transparent sensitivity assumptions.
+- `data/customer_churn_sample.csv` — supplied synthetic source data.
+- `build.py` — reproducible builder for the eight-slide PPTX, matching PDF, and narrated video.
 
-## Executive recommendation
-Investigate **early-tenure customers with repeated recent support tickets** through a small, human-reviewed, 30-day service pilot. Define a comparison group and success measures before outreach; scale only if subsequent churn and issue resolution improve.
-
-## Five insights
+## Five key insights
 1. 7 of 15 records are marked churned (46.7%).
 2. Month-to-Month is 7/7 churned; One Year and Two Year are each 0/4.
-3. Average tenure is 7.0 months among churned records versus 29.1 months among records not marked churned.
-4. Average support tickets in the previous 90 days are 4.3 vs 1.0.
-5. Monthly charges associated with churned records sum to ₹409.93. This is a historical proxy, not a forecast.
+3. Mean tenure is 7.0 months for churned records versus 29.1 months for records not marked churned.
+4. Mean tickets in the previous 90 days are 4.3 versus 1.0.
+5. Monthly charges associated with churned records total ₹409.93. This is a historical charge-exposure proxy, not a forecast.
 
-## Impact and limitations
-Hypothetical reductions of 10%, 25%, and 50% applied to that ₹409.93 proxy give about ₹40.99, ₹102.48, and ₹204.97 in monthly charge-equivalent sensitivity. These are not expected savings or a causal estimate. The sample is tiny and synthetic; group rates are unstable, and contact history, costs, and intervention outcomes are unavailable.
+## Recommendation
+Run a small, human-reviewed, 30-day service pilot for early-tenure customers with repeated recent support tickets. Predefine a comparison group, success measures, and follow-up window before outreach; measure subsequent churn, issue resolution, feedback, and cost before deciding whether to scale.
 
-The MP4 uses synthetic narration. Use presentation_script.md to record your own voice if required by the reviewer.
+## Impact sensitivities
+Hypothetical 10%, 25%, and 50% reductions applied to the ₹409.93 proxy yield ₹40.99, ₹102.48, and ₹204.97 in monthly charge-equivalent sensitivity. These are not forecasts, causal estimates, or guaranteed savings.
+
+## Limitations
+The sample has only 15 synthetic records; group rates are unstable. The results do not establish causation or validate a predictive model, and contact history, intervention outcomes, customer satisfaction, margin, and outreach cost are unavailable. The MP4 uses synthetic narration; use the script to record your own voice if the reviewer requires a personal recording.
