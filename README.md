@@ -42,3 +42,24 @@ The task guide uses names such as `customer_id`, `tenure_months`, `monthly_charg
 
 ## Data-quality decisions
 The source has no missing cells, exact duplicate rows, duplicate IDs, negative counts/charges/tenure, broad age-range violations, charge-arithmetic mismatches beyond ₹0.01, or numeric IQR outliers. Cleaning is conservative: trim text whitespace, standardize selected category casing, validate the output, and do not silently drop rows.
+
+
+## Business KPI Dashboard (Task 03)
+
+The interactive dashboard source is in [`site/index.html`](site/index.html). It includes contract, tenure, and payment-method filters; churn and retention KPIs; monthly revenue exposure; average tenure; segment charts; a performance table; and filtered CSV export.
+
+### View the dashboard online
+
+After GitHub Pages finishes its first deployment, open:
+**https://pranav-nc-ai.github.io/customer-churn-data-quality/**
+
+The dashboard is deployed from the `site/` folder by `.github/workflows/deploy-dashboard.yml`. The workflow enables/configures Pages and deploys on pushes affecting `site/` or the workflow. The Vercel deployment URL is also available at:
+https://customer-churn-kpi-dashboard.vercel.app/
+
+### KPI definitions
+- **Churn rate:** customers with `Churn = Yes` divided by all customers in the current filtered slice.
+- **Retention rate:** customers with `Churn = No` divided by all customers in that slice.
+- **Monthly revenue at risk (proxy):** sum of `MonthlyCharges` where `Churn = Yes`; this is historical exposure, not a forecast.
+- **Average tenure:** mean of `TenureMonths` for the currently filtered group.
+
+All dashboard figures are computed from 15 synthetic records. Interpret segment rates cautiously; the dashboard describes associations and does not establish causation.
